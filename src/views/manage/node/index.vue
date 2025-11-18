@@ -9,7 +9,7 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="区域ID" prop="regionId">
+      <el-form-item label="区域搜索" prop="regionId">
 <!--        <el-input-->
 <!--          v-model="queryParams.regionId"-->
 <!--          placeholder="请输入区域ID"-->
@@ -70,14 +70,14 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" width="50" align="center" prop="id" />
       <el-table-column label="点位名称" align="center" prop="nodeName" />
-      <el-table-column label="区域ID" align="center" prop="regionId" />、
+      <el-table-column label="所属区域" align="center" prop="regionId" />、
       <el-table-column label="商圈类型" align="center" prop="businessType">
         <template #default="scope">
           <dict-tag :options="business_type" :value="scope.row.businessType"/>
         </template>
       </el-table-column>
-      <el-table-column label="合作商ID" align="center" prop="partnerId" />
-      <el-table-column label="详细地址" align="center" prop="address" />
+      <el-table-column label="归属合作商" align="center" prop="partnerId" />
+      <el-table-column label="详细地址" align="left" prop="address" show-overflow-tooltip/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary"  @click="handleUpdate(scope.row)" v-hasPermi="['manage:node:edit']">修改</el-button>
@@ -113,11 +113,15 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="区域ID" prop="regionId">
-          <el-input v-model="form.regionId" placeholder="请输入区域ID" />
+        <el-form-item label="所属区域" prop="regionId">
+          <el-select v-model="form.regionId" placeholder="请选择区域">
+            <el-option v-for="item in regionList" :key="item.id" :label="item.regionName" :value="item.id" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="合作商ID" prop="partnerId">
-          <el-input v-model="form.partnerId" placeholder="请输入合作商ID" />
+        <el-form-item label="归属合作商" prop="partnerId">
+          <el-select v-model="form.partnerId" placeholder="请选择合作商">
+            <el-option v-for="item in partnerList" :key="item.id" :label="item.partnerName" :value="item.id" />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -133,7 +137,8 @@
 <script setup name="Node">
 import { listNode, getNode, delNode, addNode, updateNode } from "@/api/manage/node";
 import {listRegion} from '@/api/manage/region.js'
-
+import {listPartner} from '@/api/manage/partner.js'
+import {loadAllParams} from '@/api/page.js'
 const { proxy } = getCurrentInstance();
 const { business_type } = proxy.useDict('business_type');
 
@@ -287,19 +292,23 @@ function handleExport() {
   }, `node_${new Date().getTime()}.xlsx`)
 }
 
-/** 查询所有区域对象 */
-const loadParams = reactive({
-  pageNum: 1,
-  pageSize: 10000,
-})
+
 
 /** 查询区域列表 */
 const regionList = ref([]);
 function getRegionList() {
-  listRegion(loadParams).then(response => {
+  listRegion(loadAllParams).then(response => {
     regionList.value = response.rows;
   });
 }
+/** 查询所有合作商对象 */
+const partnerList = ref([]);
+function getPartnerList() {
+  listPartner(loadAllParams).then(response => {
+    partnerList.value = response.rows;
+  });
+}
+getPartnerList();
 getRegionList();
 getList();
 </script>
