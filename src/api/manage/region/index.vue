@@ -59,15 +59,13 @@
 
     <el-table v-loading="loading" :data="regionList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" align="center" prop="id" />
+      <el-table-column label="主键id" align="center" prop="id" />
       <el-table-column label="区域名称" align="center" prop="regionName" />
-      <el-table-column label="点位数" align="center" prop="nodeCount" />
       <el-table-column label="备注说明" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary"  @click="getRegionInfo(scope.row)" v-hasPermi="['manage:node:list']">查看详情</el-button>
-          <el-button link type="primary"  @click="handleUpdate(scope.row)" v-hasPermi="['manage:region:edit']">修改</el-button>
-          <el-button link type="primary"  @click="handleDelete(scope.row)" v-hasPermi="['manage:region:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['manage:region:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['manage:region:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,24 +95,11 @@
         </div>
       </template>
     </el-dialog>
-    <el-dialog title="区域详情" v-model="reginInfoOpen" width="500px" append-to-body>
-      <el-form-item label="区域名称" prop="regionName">
-        <el-input v-model="form.regionName" placeholder="请输入区域名称" disabled  />
-      </el-form-item>
-      <label>包含点位：</label>
-      <el-table :data="nodeList">
-        <el-table-column label="序号" width="50" align="center" prop="id" />
-        <el-table-column label="点位名称" align="center" prop="nodeName" />
-        <el-table-column label="设备数量" align="center" prop="vmCount" />
-      </el-table>
-    </el-dialog>
   </div>
 </template>
 
 <script setup name="Region">
 import { listRegion, getRegion, delRegion, addRegion, updateRegion } from "@/api/manage/region";
-import {listNode} from "@/api/manage/node";
-import {loadAllParams} from "@/api/page.js";
 
 const { proxy } = getCurrentInstance();
 
@@ -212,24 +197,6 @@ function handleUpdate(row) {
     open.value = true;
     title.value = "修改区域管理";
   });
-}
-
-const reginInfoOpen = ref(false)
-const nodeList = ref([])
-function getRegionInfo(row) {
-  reset();
-
-  //查看区域信息
-  const _id = row.id || ids.value
-  getRegion(_id).then(response => {
-    form.value = response.data;
-  });
-  //查看点位列表
-  loadAllParams.regionId = row.id;
-  listNode({loadAllParams}).then(response => {
-    nodeList.value = response.rows;
-  })
-  reginInfoOpen.value = true;
 }
 
 /** 提交按钮 */
