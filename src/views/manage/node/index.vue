@@ -76,7 +76,7 @@
           <dict-tag :options="business_type" :value="scope.row.businessType"/>
         </template>
       </el-table-column>
-      <el-table-column label="归属合作商" align="center" prop="partner.partnerName" />
+      <el-table-column label="归属合作商"  align="center" prop="partner.partnerName" />
       <el-table-column label="详细地址" align="left" prop="address" show-overflow-tooltip/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -100,9 +100,6 @@
         <el-form-item label="点位名称" prop="nodeName">
           <el-input v-model="form.nodeName" placeholder="请输入点位名称" />
         </el-form-item>
-        <el-form-item label="详细地址" prop="address">
-          <el-input v-model="form.address" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
         <el-form-item label="商圈类型" prop="businessType">
           <el-select v-model="form.businessType" placeholder="请选择商圈类型">
             <el-option
@@ -122,6 +119,9 @@
           <el-select v-model="form.partnerId" placeholder="请选择合作商">
             <el-option v-for="item in partnerList" :key="item.id" :label="item.partnerName" :value="item.id" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="详细地址" prop="address">
+          <el-input v-model="form.address" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <template #footer>
