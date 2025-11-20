@@ -99,14 +99,60 @@
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="vmRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="设备编号" prop="innerCode">
-          <el-input v-model="form.innerCode" placeholder="请输入设备编号" />
+          <span>{{form.innerCode == null ? "系统自动生成" : form.innerCode}}</span>
         </el-form-item>
+        <el-form-item label="供货时间" v-if="form.innerCode != null">
+          <span>{{parseTime(form.lastSupplyTime, "{y}-{m}-{d} {h}:{i}:{s}")}}</span>
+        </el-form-item>
+        <el-form-item label="设备名称" v-if="form.innerCode != null">
+          <div v-for="item in vmTypeList" :key="item.id">
+            <span v-if="item.id === form.vmTypeId">{{item.name}}</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备容量" v-if="form.innerCode != null">
+          <span>{{form.channelMaxCapacity}}</span>
+        </el-form-item>
+
+        <el-form-item label="设备型号" prop="vmTypeId" v-if="form.innerCode == null">
+<!--          <el-input v-model="form.vmTypeId" placeholder="请输入设备型号" />-->
+        <el-select v-model="form.vmTypeId" placeholder="请选择设备型号" >
+          <el-option
+            v-for="item in vmTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        </el-form-item>
+
+        <el-form-item label="合作商" v-if="form.innerCode != null">
+          <div v-for="item in partnerList" :key="item.id">
+            <span v-if="item.id === form.partnerId">{{item.partnerName}}</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="所属区域" v-if="form.innerCode != null">
+          <div v-for="item in regionList" :key="item.id">
+            <span v-if="item.id === form.regionId">{{item.regionName}}</span>
+          </div>
+        </el-form-item>
+
+        <el-form-item label="设备地址" v-if="form.innerCode != null">
+          {{form.addr}}
+        </el-form-item>
+
         <el-form-item label="点位Id" prop="nodeId">
-          <el-input v-model="form.nodeId" placeholder="请输入点位Id" />
+<!--          <el-input v-model="form.nodeId" placeholder="请输入点位Id" />-->
+          <el-select v-model="form.nodeId" placeholder="请选择点位">
+            <el-option
+              v-for="item in nodeList"
+              :key="item.id"
+              :label="item.nodeName"
+              :value="item.id"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="设备型号" prop="vmTypeId">
-          <el-input v-model="form.vmTypeId" placeholder="请输入设备型号" />
-        </el-form-item>
+
+
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -124,7 +170,8 @@ import {listRegion} from "@/api/manage/region.js";
 import {listPartner} from "@/api/manage/partner.js";
 import {loadAllParams} from "@/api/page.js";
 import {listVmType} from "@/api/manage/vmType.js";
-
+import {listNode} from "@/api/manage/node.js";
+import {parseTime} from "../../../utils/ruoyi.js";
 
 const { proxy } = getCurrentInstance();
 const { vm_status } = proxy.useDict('vm_status');
@@ -300,8 +347,24 @@ function getPartnerList() {
     partnerList.value = response.rows;
   })
 }
+/** 查询点位列表  **/
+const nodeList = ref([]);
+function getNodeList() {
+  listNode(loadAllParams).then(response =>{
+    nodeList.value = response.rows;
+  })
+}
+/** 查询区域列表 **/
+const regionList = ref([]);
+function getRegionList() {
+  listRegion(loadAllParams).then(response =>{
+    regionList.value = response.rows;
+  })
+}
 
 
+getRegionList()
+getNodeList()
 getVmTypeList()
 getPartnerList()
 getList();
