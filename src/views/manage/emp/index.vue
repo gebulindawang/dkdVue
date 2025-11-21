@@ -87,7 +87,6 @@
           <el-input v-model="form.userName" placeholder="请输入人员名称" />
         </el-form-item>
         <el-form-item label="角色名称" prop="roleId">
-<!--          <el-input v-model="form.roleId" placeholder="请输入角色id" />-->
           <el-select v-model="form.roleId"  placeholder="请选择角色">
             <el-option
               v-for="item in roleList"
@@ -105,7 +104,6 @@
           {{form.createTime}}
         </el-form-item>
         <el-form-item label="负责区" prop="regionId">
-<!--          <el-input v-model="form.regionId" placeholder="请输入所属区域Id" />-->
           <el-select v-model="form.regionId" placeholder="请选择负责区域">
             <el-option
               v-for="item in regionList"
