@@ -112,7 +112,17 @@
         <el-form-item label="设备容量" v-if="form.innerCode != null">
           <span>{{form.channelMaxCapacity}}</span>
         </el-form-item>
-
+        <el-form-item label="选择点位" prop="nodeId">
+          <!--          <el-input v-model="form.nodeId" placeholder="请输入点位Id" />-->
+          <el-select v-model="form.nodeId" placeholder="请选择点位">
+            <el-option
+                v-for="item in nodeList"
+                :key="item.id"
+                :label="item.nodeName"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="设备型号" prop="vmTypeId" v-if="form.innerCode == null">
 <!--          <el-input v-model="form.vmTypeId" placeholder="请输入设备型号" />-->
         <el-select v-model="form.vmTypeId" placeholder="请选择设备型号" >
@@ -140,17 +150,7 @@
           {{form.addr}}
         </el-form-item>
 
-        <el-form-item label="点位Id" prop="nodeId">
-<!--          <el-input v-model="form.nodeId" placeholder="请输入点位Id" />-->
-          <el-select v-model="form.nodeId" placeholder="请选择点位">
-            <el-option
-              v-for="item in nodeList"
-              :key="item.id"
-              :label="item.nodeName"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
+
 
 
       </el-form>
