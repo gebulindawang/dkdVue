@@ -68,7 +68,7 @@
 
     <el-table v-loading="loading" :data="skuList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" align="center" prop="skuId" />
+      <el-table-column label="序号" type="index" align="center" prop="skuId" />
       <el-table-column label="商品名称" align="center" prop="skuName" />
       <el-table-column label="商品图片" align="center" prop="skuImage" width="100">
         <template #default="scope">
